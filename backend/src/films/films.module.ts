@@ -20,9 +20,6 @@ import { MongoFilmsRepository } from '../repository/mongo-films.repository';
       useClass: MongoFilmsRepository,
     },
   ],
-  exports: [
-  FilmsService,
-  FilmsRepository,
-],
+  exports: [FilmsService, FilmsRepository],
 })
 export class FilmsModule {}

@@ -1,6 +1,4 @@
-//TODO описать DTO для запросов к /films
-import { IsString, IsNumber, ValidateNested } from 'class-validator';
-
+import { IsString, IsNumber, ValidateNested, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ScheduleDto {
@@ -22,6 +20,7 @@ export class ScheduleDto {
   @IsNumber()
   price: number;
 
+  @IsArray()
   @IsString({ each: true })
   taken: string[];
 }
@@ -36,6 +35,7 @@ export class FilmDto {
   @IsString()
   director: string;
 
+  @IsArray()
   @IsString({ each: true })
   tags: string[];
 
@@ -54,6 +54,7 @@ export class FilmDto {
   @IsString()
   description: string;
 
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ScheduleDto)
   schedule: ScheduleDto[];

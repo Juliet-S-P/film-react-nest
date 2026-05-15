@@ -25,8 +25,12 @@ import { configProvider } from './app.config.provider';
     }),
 
     ServeStaticModule.forRoot({
-         rootPath: path.join(process.cwd(), 'public/content/afisha'),
-  serveRoot: '/content/afisha',
+      rootPath: path.join(process.cwd(), 'public/content/afisha'),
+      serveRoot: '/content/afisha',
+      serveStaticOptions: {
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        etag: true,
+      },
     }),
 
     FilmsModule,

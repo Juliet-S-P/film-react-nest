@@ -15,11 +15,11 @@ export class MongoFilmsRepository extends FilmsRepository {
   }
 
   async findAll(): Promise<Film[]> {
-    return this.filmModel.find().lean();
+    return this.filmModel.find({}, { _id: 0, __v: 0 }).lean();
   }
 
   async findById(id: string): Promise<Film | null> {
-    return this.filmModel.findOne({ id }).lean();
+    return this.filmModel.findOne({ id }, { _id: 0, __v: 0 }).lean();
   }
 
   async findSchedule(
@@ -44,19 +44,20 @@ export class MongoFilmsRepository extends FilmsRepository {
     filmId: string,
     sessionId: string,
     seats: string[],
-  ): Promise<void> {
-    await this.filmModel.updateOne(
+  ): Promise<boolean> {
+    const result = await this.filmModel.updateOne(
       {
         id: filmId,
         'schedule.id': sessionId,
+        'schedule.taken': { $nin: seats },
       },
       {
-        $push: {
-          'schedule.$.taken': {
-            $each: seats,
-          },
+        $addToSet: {
+          'schedule.$.taken': { $each: seats },
         },
       },
     );
+
+    return result.matchedCount > 0 && result.modifiedCount > 0;
   }
 }

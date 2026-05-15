@@ -1,34 +1,8 @@
-//TODO реализовать DTO для /orders
-import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateOrderDto {
   @IsString()
-  @IsNotEmpty()
-  film: string;
-
-  @IsString()
-  @IsNotEmpty()
-  session: string;
-
-  @IsString()
-  @IsNotEmpty()
-  daytime: string;
-
-  @IsNumber()
-  row: number;
-
-  @IsNumber()
-  seat: number;
-
-  @IsNumber()
-  price: number;
-}
-
-export class OrderItemDto {
-  @IsString()
-  id: string;
-
-  @IsString()
   film: string;
 
   @IsString()
@@ -37,19 +11,15 @@ export class OrderItemDto {
   @IsString()
   daytime: string;
 
+  @Type(() => Number)
   @IsNumber()
   row: number;
 
+  @Type(() => Number)
   @IsNumber()
   seat: number;
 
+  @Type(() => Number)
   @IsNumber()
   price: number;
-}
-
-export class OrderResponseDto {
-  @IsNumber()
-  total: number;
-
-  items: OrderItemDto[];
 }

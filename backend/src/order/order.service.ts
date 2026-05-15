@@ -1,7 +1,6 @@
 import {
   Injectable,
   Inject,
-  NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
 
@@ -16,40 +15,30 @@ export class OrderService {
     private readonly filmsRepository: FilmsRepository,
   ) {}
 
-  async createOrder(dto: CreateOrderDto) {
-    const { film, session, row, seat } = dto;
+  async createOrders(dto: CreateOrderDto | CreateOrderDto[]) {
+    const orders = Array.isArray(dto) ? dto : [dto];
 
-    const foundFilm = await this.filmsRepository.findById(film);
+    const items = [];
 
-    if (!foundFilm) {
-      throw new NotFoundException(`Film not found: ${film}`);
+    for (const order of orders) {
+      const seatKey = `${order.row}:${order.seat}`;
+
+      const success = await this.filmsRepository.updateTakenSeats(
+        order.film,
+        order.session,
+        [seatKey],
+      );
+
+      if (!success) {
+        throw new BadRequestException('Seat already taken');
+      }
+
+      items.push({
+        id: randomUUID(),
+        ...order,
+      });
     }
 
-    const foundSession = await this.filmsRepository.findSchedule(
-      film,
-      session,
-    );
-
-    if (!foundSession) {
-      throw new NotFoundException(`Session not found: ${session}`);
-    }
-
-    const seatKey = `${row}:${seat}`;
-
-    if (foundSession.taken.includes(seatKey)) {
-      throw new BadRequestException(`Seat already taken: ${seatKey}`);
-    }
-
-    await this.filmsRepository.updateTakenSeats(film, session, [seatKey]);
-
-    return {
-      id: randomUUID(),
-      film,
-      session,
-      daytime: foundSession.daytime,
-      row,
-      seat,
-      price: foundSession.price,
-    };
+    return { total: items.length, items };
   }
 }

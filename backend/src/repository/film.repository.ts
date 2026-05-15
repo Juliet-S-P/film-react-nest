@@ -13,5 +13,5 @@ export abstract class FilmsRepository {
     filmId: string,
     sessionId: string,
     seats: string[],
-  ): Promise<void>;
+  ): Promise<boolean>;
 }

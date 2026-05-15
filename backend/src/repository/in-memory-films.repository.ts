@@ -32,13 +32,19 @@ export class InMemoryFilmsRepository extends FilmsRepository {
     filmId: string,
     sessionId: string,
     seats: string[],
-  ): Promise<void> {
+  ): Promise<boolean> {
     const schedule = await this.findSchedule(filmId, sessionId);
 
     if (!schedule) {
-      return;
+      return false;
+    }
+    const hasConflict = seats.some((seat) => schedule.taken.includes(seat));
+
+    if (hasConflict) {
+      return false;
     }
 
-    schedule.taken.push(...seats);
+    schedule.taken = Array.from(new Set([...schedule.taken, ...seats]));
+    return true;
   }
 }

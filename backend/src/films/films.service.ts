@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FilmsRepository } from '../repository/film.repository';
-import { FilmDto } from './dto/films.dto';
+import { Film } from './schema/film.schema';
 
 @Injectable()
 export class FilmsService {
@@ -9,11 +9,11 @@ export class FilmsService {
     private readonly filmsRepository: FilmsRepository,
   ) {}
 
-  async getAll(): Promise<FilmDto[]> {
+  async getAll(): Promise<Film[]> {
     return this.filmsRepository.findAll();
   }
 
-  async getById(id: string): Promise<FilmDto | null> {
+  async getById(id: string): Promise<Film | null> {
     return this.filmsRepository.findById(id);
   }
 }

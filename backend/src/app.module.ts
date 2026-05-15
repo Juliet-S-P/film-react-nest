@@ -6,7 +6,6 @@ import * as path from 'node:path';
 
 import { FilmsModule } from './films/films.module';
 import { OrderModule } from './order/order.module';
-import { configProvider } from './app.config.provider';
 
 @Module({
   imports: [
@@ -20,7 +19,10 @@ import { configProvider } from './app.config.provider';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('DATABASE_URL'),
+        uri: configService.get<string>(
+          'DATABASE_URL',
+          'mongodb://localhost:27017/prac',
+        ),
       }),
     }),
 
@@ -36,6 +38,5 @@ import { configProvider } from './app.config.provider';
     FilmsModule,
     OrderModule,
   ],
-  providers: [configProvider],
 })
 export class AppModule {}

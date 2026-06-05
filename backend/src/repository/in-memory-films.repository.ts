@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FilmsRepository } from './film.repository';
-import { Film, Schedule } from '../films/schema/film.schema';
+import { Film } from '../films/interfaces/film.interface';
+import { Schedule } from '../films/interfaces/schedule.interface';
 import * as data from '../../test/mongodb_initial_stub.json';
 
 @Injectable()

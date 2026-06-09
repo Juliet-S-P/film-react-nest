@@ -22,14 +22,17 @@ import { OrderModule } from './order/order.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: configService.get<'postgres'>('DATABASE_DRIVER', 'postgres'),
+        type: 'postgres',
+
         url: configService.get<string>('DATABASE_URL'),
+
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
 
         entities: [FilmEntity, ScheduleEntity],
 
         synchronize: false,
+        logging: false,
       }),
     }),
 

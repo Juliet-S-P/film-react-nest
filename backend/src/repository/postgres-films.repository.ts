@@ -114,32 +114,30 @@ export class PostgresFilmsRepository extends FilmsRepository {
     const schedule = await this.scheduleRepository.findOne({
       where: {
         id: sessionId,
-        film: {
-          id: filmId,
-        },
-      },
-      relations: {
-        film: true,
+        film: { id: filmId },
       },
     });
 
-    if (!schedule) {
-      return false;
-    }
+    if (!schedule) return false;
 
-    const taken = schedule.taken ? schedule.taken.split(',') : [];
+    const taken = schedule.taken
+      ? schedule.taken.split(',').filter(Boolean)
+      : [];
 
-    const alreadyTaken = seats.some((seat) => taken.includes(seat));
+    const uniqueSeats = [...new Set(seats)];
+
+    const alreadyTaken = uniqueSeats.some((seat) => taken.includes(seat));
 
     if (alreadyTaken) {
       return false;
     }
 
-    taken.push(...seats);
+    const updatedTaken = [...taken, ...uniqueSeats];
 
-    schedule.taken = taken.join(',');
-
-    await this.scheduleRepository.save(schedule);
+    await this.scheduleRepository.update(
+      { id: sessionId },
+      { taken: updatedTaken.join(',') },
+    );
 
     return true;
   }

@@ -10,13 +10,13 @@ export class ScheduleEntity {
   @Column()
   daytime: string;
 
-  @Column()
+  @Column('int')
   hall: number;
 
-  @Column()
+  @Column('int')
   rows: number;
 
-  @Column()
+  @Column('int')
   seats: number;
 
   @Column('float')
@@ -25,7 +25,12 @@ export class ScheduleEntity {
   @Column('text')
   taken: string;
 
-  @ManyToOne(() => FilmEntity, (film) => film.schedule)
+  @Column()
+  filmId: string;
+
+  @ManyToOne(() => FilmEntity, (film) => film.schedule, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'filmId',
   })

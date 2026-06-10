@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
-
 import { ScheduleEntity } from './schedule.entity';
 
 @Entity('films')
@@ -13,8 +12,8 @@ export class FilmEntity {
   @Column()
   director: string;
 
-  @Column('text')
-  tags: string;
+  @Column('text', { array: true })
+  tags: string[];
 
   @Column()
   image: string;

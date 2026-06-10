@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
-
 import { FilmEntity } from './film.entity';
 
 @Entity('schedules')
@@ -22,8 +21,8 @@ export class ScheduleEntity {
   @Column('float')
   price: number;
 
-  @Column('text')
-  taken: string;
+  @Column('text', { array: true })
+  taken: string[];
 
   @Column()
   filmId: string;
@@ -31,8 +30,6 @@ export class ScheduleEntity {
   @ManyToOne(() => FilmEntity, (film) => film.schedule, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({
-    name: 'filmId',
-  })
+  @JoinColumn({ name: 'filmId' })
   film: FilmEntity;
 }

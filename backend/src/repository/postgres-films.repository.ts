@@ -28,7 +28,7 @@ export class PostgresFilmsRepository extends FilmsRepository {
       rating: film.rating,
       director: film.director,
 
-      tags: film.tags ? film.tags.split(',') : [],
+      tags: Array.isArray(film.tags) ? film.tags : [],
 
       image: film.image,
       cover: film.cover,
@@ -44,16 +44,14 @@ export class PostgresFilmsRepository extends FilmsRepository {
         seats: schedule.seats,
         price: schedule.price,
 
-        taken: schedule.taken ? schedule.taken.split(',') : [],
+        taken: Array.isArray(schedule.taken) ? schedule.taken : [],
       })),
     };
   }
 
   async findAll(): Promise<Film[]> {
     const films = await this.filmRepository.find({
-      relations: {
-        schedule: true,
-      },
+      relations: { schedule: true },
     });
 
     return films.map((film) => this.mapFilm(film));
@@ -62,14 +60,10 @@ export class PostgresFilmsRepository extends FilmsRepository {
   async findById(id: string): Promise<Film | null> {
     const film = await this.filmRepository.findOne({
       where: { id },
-      relations: {
-        schedule: true,
-      },
+      relations: { schedule: true },
     });
 
-    if (!film) {
-      return null;
-    }
+    if (!film) return null;
 
     return this.mapFilm(film);
   }
@@ -81,18 +75,12 @@ export class PostgresFilmsRepository extends FilmsRepository {
     const schedule = await this.scheduleRepository.findOne({
       where: {
         id: sessionId,
-        film: {
-          id: filmId,
-        },
+        film: { id: filmId },
       },
-      relations: {
-        film: true,
-      },
+      relations: { film: true },
     });
 
-    if (!schedule) {
-      return null;
-    }
+    if (!schedule) return null;
 
     return {
       id: schedule.id,
@@ -102,7 +90,7 @@ export class PostgresFilmsRepository extends FilmsRepository {
       seats: schedule.seats,
       price: schedule.price,
 
-      taken: schedule.taken ? schedule.taken.split(',') : [],
+      taken: Array.isArray(schedule.taken) ? schedule.taken : [],
     };
   }
 
@@ -120,23 +108,19 @@ export class PostgresFilmsRepository extends FilmsRepository {
 
     if (!schedule) return false;
 
-    const taken = schedule.taken
-      ? schedule.taken.split(',').filter(Boolean)
-      : [];
+    const taken = Array.isArray(schedule.taken) ? schedule.taken : [];
 
     const uniqueSeats = [...new Set(seats)];
 
     const alreadyTaken = uniqueSeats.some((seat) => taken.includes(seat));
 
-    if (alreadyTaken) {
-      return false;
-    }
+    if (alreadyTaken) return false;
 
     const updatedTaken = [...taken, ...uniqueSeats];
 
     await this.scheduleRepository.update(
       { id: sessionId },
-      { taken: updatedTaken.join(',') },
+      { taken: updatedTaken },
     );
 
     return true;

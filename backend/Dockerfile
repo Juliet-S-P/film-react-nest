@@ -21,8 +21,6 @@ COPY --from=builder /app/dist ./dist
 
 COPY --from=builder /app/public ./public
 
-COPY .env ./.env
-
 EXPOSE 3000
 
 CMD ["node", "dist/main.js"]

@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { JsonLogger } from './json.logger';
 
 describe('JsonLogger', () => {
@@ -25,13 +26,19 @@ describe('JsonLogger', () => {
     spy.mockRestore();
   });
 
-  it('should write error message as JSON', () => {
-    const spy = jest.spyOn(console, 'error').mockImplementation();
+it('should write error message as JSON', () => {
+  const spy = jest.spyOn(console, 'error').mockImplementation();
 
-    logger.error('error');
+  logger.error('error', 'details');
 
-    expect(spy).toHaveBeenCalled();
+  expect(spy).toHaveBeenCalledWith(
+    JSON.stringify({
+      level: 'error',
+      message: 'error',
+      optionalParams: ['details'],
+    }),
+  );
 
-    spy.mockRestore();
-  });
+  spy.mockRestore();
+});
 });

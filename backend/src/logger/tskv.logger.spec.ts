@@ -18,12 +18,14 @@ describe('TskvLogger', () => {
   });
 
   it('should add params to TSKV', () => {
-    const spy = jest.spyOn(console, 'log').mockImplementation();
+  const spy = jest.spyOn(console, 'log').mockImplementation();
 
-    logger.log('hello', 'world');
+  logger.log('hello', 'world');
 
-    expect(spy).toHaveBeenCalledWith('level=log\tmessage=hello\tparam=world');
+  expect(spy).toHaveBeenCalledWith(
+    'level=log\tmessage=hello\tparam1=world',
+  );
 
-    spy.mockRestore();
-  });
+  spy.mockRestore();
+});
 });

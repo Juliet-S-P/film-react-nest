@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { FilmEntity } from './film.entity';
 
 @Entity('schedules')
 export class ScheduleEntity {
-  @PrimaryColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+id: string;
 
   @Column()
   daytime: string;
@@ -21,15 +21,17 @@ export class ScheduleEntity {
   @Column('float')
   price: number;
 
-  @Column('text', { array: true })
+  @Column('text', { array: true, default: [] })
   taken: string[];
 
   @Column()
   filmId: string;
 
-  @ManyToOne(() => FilmEntity, (film) => film.schedule, {
+   @ManyToOne(() => FilmEntity, (film) => film.schedule, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'filmId' })
-  film: FilmEntity;
+  @JoinColumn({
+    name: 'filmId',
+  })
+  film?: FilmEntity;
 }

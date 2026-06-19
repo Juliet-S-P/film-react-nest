@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { ScheduleEntity } from './schedule.entity';
 
 @Entity('films')
 export class FilmEntity {
-  @PrimaryColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+id: string;
 
   @Column('float')
   rating: number;
@@ -12,7 +12,7 @@ export class FilmEntity {
   @Column()
   director: string;
 
-  @Column('text', { array: true })
+  @Column('text', { array: true, default: [] })
   tags: string[];
 
   @Column()

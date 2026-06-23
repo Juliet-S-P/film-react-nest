@@ -22,7 +22,7 @@ import { OrderModule } from './order/order.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: configService.get<'postgres'>('DATABASE_DRIVER'),
+        type: 'postgres',
 
         host: configService.get<string>('DATABASE_HOST'),
         port: Number(configService.get('DATABASE_PORT')),

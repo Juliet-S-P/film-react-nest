@@ -1,15 +1,10 @@
 import { runSeeds } from './seed.runner';
 
-
-async function main() {
-
-  await runSeeds();
-
-}
-
-
-main()
-  .catch((error) => {
-    console.error('❌ Seed error:', error);
+runSeeds()
+  .then(() => {
+    console.log('🌱 Seed finished');
+  })
+  .catch((e) => {
+    console.error('❌ Seed error', e);
     process.exit(1);
   });

@@ -1,12 +1,11 @@
 version: '3.9'
 
 services:
-
   postgres:
     image: postgres:16
     container_name: film-postgres
     ports:
-    - "5432:5432"
+      - "5432:5432"
     env_file:
       - ./backend/.env.db
     volumes:
@@ -17,26 +16,31 @@ services:
       test: ["CMD-SHELL", "pg_isready -U film_admin -d film_db"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
 
   backend:
     build:
       context: ./backend
-    image: ghcr.io/ispun/film-react-nest-backend:latest
+    image: ghcr.io/juliet-s-p/film-backend:latest
     container_name: film-backend
     env_file:
       - ./backend/.env.docker
     environment:
       NODE_ENV: docker
+      RUN_MIGRATIONS: "true"
+      RUN_SEED: "true"
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - app-network
+    restart: unless-stopped
+
   frontend:
     build:
       context: ./frontend
-    image: ghcr.io/ispun/film-react-nest-frontend:latest
+    image: ghcr.io/juliet-s-p/film-frontend:latest
     container_name: film-frontend
     ports:
       - "80:80"
@@ -44,6 +48,7 @@ services:
       - backend
     networks:
       - app-network
+    restart: unless-stopped
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -59,6 +64,7 @@ services:
       - app-network
     depends_on:
       - postgres
+    restart: unless-stopped
 
 volumes:
   postgres_data:

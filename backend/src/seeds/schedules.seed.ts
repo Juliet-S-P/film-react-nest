@@ -1,14 +1,17 @@
 import { AppDataSource } from '../data-source';
 import { ScheduleEntity } from '../entities/schedule.entity';
 
-
 export async function schedulesSeed() {
-
   const repo = AppDataSource.getRepository(ScheduleEntity);
 
+  const count = await repo.count();
 
-  const schedules: ScheduleEntity[] = [
+  if (count > 0) {
+    console.log('📅 Schedules already exist, skip seed');
+    return;
+  }
 
+  await repo.save([
     {
       id: 'f2e429b0-685d-41f8-a8cd-1d8cb63b99ce',
       daytime: '2024-06-28T10:00:53+03:00',
@@ -100,9 +103,7 @@ export async function schedulesSeed() {
       taken:[]
     }
 
-  ];
+  ]);
 
-
-  await repo.save(schedules);
-
+  console.log('📅 Schedules seeded');
 }

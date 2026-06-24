@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'node:path';
+
+import { FilmEntity } from './entities/film.entity';
+import { ScheduleEntity } from './entities/schedule.entity';
 
 import { FilmsModule } from './films/films.module';
 import { OrderModule } from './order/order.module';
@@ -12,17 +15,27 @@ import { OrderModule } from './order/order.module';
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      envFilePath: '.env',
+       envFilePath: '.env',
     }),
 
-    MongooseModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>(
-          'DATABASE_URL',
-          'mongodb://localhost:27017/prac',
-        ),
+        type: 'postgres',
+
+        host: configService.get<string>('DATABASE_HOST'),
+        port: Number(configService.get('DATABASE_PORT')),
+
+        database: configService.get<string>('DATABASE_NAME'),
+
+        username: configService.get<string>('DATABASE_USERNAME'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+
+        entities: [FilmEntity, ScheduleEntity],
+
+        synchronize: false,
+        logging: false,
       }),
     }),
 

@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
+
 import { FilmsRepository } from './film.repository';
-import { Film, Schedule } from '../films/schema/film.schema';
+
+import { Film } from '../films/interfaces/film.interface';
+import { Schedule } from '../films/interfaces/schedule.interface';
+
 import * as data from '../../test/mongodb_initial_stub.json';
 
 @Injectable()
@@ -21,11 +25,9 @@ export class InMemoryFilmsRepository extends FilmsRepository {
   ): Promise<Schedule | null> {
     const film = await this.findById(filmId);
 
-    if (!film) {
-      return null;
-    }
+    if (!film) return null;
 
-    return film.schedule.find((schedule) => schedule.id === sessionId) || null;
+    return film.schedule.find((s) => s.id === sessionId) || null;
   }
 
   async updateTakenSeats(
@@ -35,16 +37,16 @@ export class InMemoryFilmsRepository extends FilmsRepository {
   ): Promise<boolean> {
     const schedule = await this.findSchedule(filmId, sessionId);
 
-    if (!schedule) {
-      return false;
-    }
-    const hasConflict = seats.some((seat) => schedule.taken.includes(seat));
+    if (!schedule) return false;
 
-    if (hasConflict) {
-      return false;
-    }
+    const taken = schedule.taken ?? [];
 
-    schedule.taken = Array.from(new Set([...schedule.taken, ...seats]));
+    const hasConflict = seats.some((seat) => taken.includes(seat));
+
+    if (hasConflict) return false;
+
+    schedule.taken = Array.from(new Set([...taken, ...seats]));
+
     return true;
   }
 }

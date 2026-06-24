@@ -13,7 +13,12 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/afisha');
 
-  app.enableCors();
+  app.enableCors({
+  origin: [
+    'http://film-project.students.nomorepartiessite.ru',
+    'https://film-project.students.nomorepartiessite.ru'
+  ],
+});
   app.useLogger(new TskvLogger());
   app.useGlobalPipes(
     new ValidationPipe({

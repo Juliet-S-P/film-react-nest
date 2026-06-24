@@ -34,6 +34,9 @@ MongoDB должна быть установлена и запущена.
 Деплой проекта
 
 Проект задеплоен на сервере Yandex Cloud.
-Frontend: http://158.160.233.105 
-Backend API: http://158.160.233.105/api/afisha 
+Frontend:
+http://film-project.students.nomorepartiessite.ru
+
+Backend:
+http://api-film-project.students.nomorepartiessite.ru
 

@@ -16,10 +16,10 @@ services:
 
 
   backend:
-    build:
-      context: ./backend
     image: ghcr.io/juliet-s-p/film-backend:latest
     container_name: film-backend
+    ports:
+      - "3000:3000"
     env_file:
       - .env
       - ./backend/.env.docker
@@ -32,8 +32,6 @@ services:
 
 
   frontend:
-    build:
-      context: ./frontend
     image: ghcr.io/juliet-s-p/film-frontend:latest
     container_name: film-frontend
     ports:
